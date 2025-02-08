@@ -18,8 +18,17 @@ class TaskList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tasks'] = context['tasks'].filter(user=self.request.user)
-        return context
 
+        searchInputText = self.request.GET.get('search') or ""
+
+        searchInputText = self.request.GET.get('search')
+        if searchInputText:
+            context['tasks'] = context['tasks'].filter(title__startswith=searchInputText)
+
+        context['search'] = searchInputText
+
+        return context
+    
 
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
